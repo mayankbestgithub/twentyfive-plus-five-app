@@ -56,3 +56,7 @@ span#session-label {
   width: 200px;
   margin: auto;
 }
+
+#beep {
+  visibility: hidden;
+}

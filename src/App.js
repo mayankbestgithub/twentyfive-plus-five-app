@@ -1,12 +1,21 @@
 import './App.css';
 
 function App() {
+  const playAudio = (milliseconds) => {
+
+    let timer = setTimeout(() => {
+      document.getElementById("beep").style.visibility = 'visible';
+      document.getElementById("beep").play();
+    }, milliseconds)
+    setTimeout(() => {
+      document.getElementById("beep").style.visibility = 'hidden';
+      clearTimeout(timer);
+    }, 10000)
+  }
   return (
     <div className="App">
       <h1>25+5 Clock</h1>
-      <audio id="beep">
-        <source src="" />
-      </audio>
+
       <div>
         <span id="break-label">
 
@@ -25,7 +34,7 @@ function App() {
         <div id="timer-label">
           <span>Session</span>
           <div id="time-left">25:00</div>
-          <div><button id="start_stop" >&#9658;</button><button>&#x23E9;&#xFE0E;</button><button id="reset">&#10561;</button></div>
+          <div><button id="start_stop" onClick={() => playAudio(3000)}>&#9658;</button><button>&#x23E9;&#xFE0E;</button><button id="reset">&#10561;</button></div>
         </div>
       </div>
     </div >
