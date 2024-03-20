@@ -1,6 +1,11 @@
+import { useEffect } from 'react';
 import './App.css';
-
+import Activity from './Features/activity/Activity';
+import Timer from './Features/timer/Timer';
+import { alarmStatus } from './Features/timer/timerSlice'
+import { useSelector } from 'react-redux';
 function App() {
+  const alarm = useSelector(alarmStatus)
   const playAudio = (milliseconds) => {
 
     let timer = setTimeout(() => {
@@ -10,33 +15,20 @@ function App() {
     setTimeout(() => {
       document.getElementById("beep").style.visibility = 'hidden';
       clearTimeout(timer);
-    }, 10000)
+    }, 5000)
   }
+  useEffect(() => {
+    if (alarm === 'on') {
+      console.log('play audio')
+      playAudio(3000);
+    }
+
+  }, [alarm])
   return (
     <div className="App">
       <h1>25+5 Clock</h1>
-
-      <div>
-        <span id="break-label">
-
-          <strong>Break Length</strong>
-          <div>
-            <button id="break-decrement">&#8595;</button><span id="break-length">5</span><button id="break-increment">&#8593;</button>
-          </div>
-        </span>
-        <span id="session-label">
-
-          <strong>Session Length</strong>
-          <div>
-            <button id="session-decrement">&#8595;</button><span id="session-length">25</span><button id="session-increment">&#8593;</button>
-          </div>
-        </span>
-        <div id="timer-label">
-          <span>Session</span>
-          <div id="time-left">25:00</div>
-          <div><button id="start_stop" onClick={() => playAudio(3000)}>&#9658;</button><button>&#x23E9;&#xFE0E;</button><button id="reset">&#10561;</button></div>
-        </div>
-      </div>
+      <Activity></Activity>
+      <Timer></Timer>
     </div >
   );
 }
