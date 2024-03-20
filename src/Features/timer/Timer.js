@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { breakLength, sessionLength } from '../activity/activitySlice';
+import { breakLength, sessionLength, resettingActivity } from '../activity/activitySlice';
 import './Timer.css';
 import {
     play,
@@ -10,6 +10,7 @@ import {
     setExpired,
     setExpiring,
     currentStatus,
+    length
 
 
 
@@ -19,7 +20,8 @@ import { useEffect } from 'react';
 const Timer = () => {
     const breakL = useSelector(breakLength);
     const sessionL = useSelector(sessionLength);
-    const status = useSelector(currentStatus)
+    const status = useSelector(currentStatus);
+    const timerLength = useSelector(length);
     const [activityType, setActivityType] = useState('session');
     const [minute, setMinute] = useState(sessionL)
     const [second, setSecond] = useState(59);
@@ -74,31 +76,43 @@ const Timer = () => {
                 setColor('black')
                 dispatch(replay())
             }
-            else if (activityType === 'session' && sessionL !== minute) {
-                setMinute(sessionL)
-            }
-            else if (activityType === 'break' && breakL !== minute) {
-                setMinute(breakL)
-            }
+
 
         }, 1000);
 
         return () => clearInterval(interval)
 
-    }, [minute, second, color, activityType, status, breakL, sessionL, dispatch]);
+    }, [minute, second, color, activityType, status, breakL, sessionL, timerLength, dispatch]);
+    useEffect(() => {
+        if (activityType === 'session' && sessionL !== timerLength) {
+            setMinute(sessionL)
+            setSecond(59)
+        }
+        else if (activityType === 'break' && breakL !== timerLength) {
+            setMinute(breakL)
+            setSecond(59)
+        }
+    }, [activityType, timerLength, breakL, sessionL]);
     const timer = () => {
 
         dispatch(play());
 
     }
-
-    return (<div id="timer-label">
-        <span>{activityType.toUpperCase()}</span>
+    const resetting = () => {
+        dispatch(reset())
+        dispatch(resettingActivity())
+        setActivityType('session')
+        setMinute(timerLength);
+        setSecond(59)
+    }
+    return (<div><div id="timer-label">
+        <span style={{ color }}>{activityType.toUpperCase()}</span>
         <div id="time-left" style={{ color }}>{minute}:{String(59 - second).length === 1 ? '0' + String(59 - second) : String(59 - second)}</div>
+    </div>
         <div>
             <button id="start_stop" onClick={() => timer()}>&#9658;</button>
             <button onClick={() => dispatch(pause())}>&#x23E9;&#xFE0E;</button>
-            <button id="reset" onClick={() => dispatch(reset())}>&#10561;</button>
+            <button id="reset" onClick={() => resetting()}>&#10561;</button>
         </div>
     </div>)
 }

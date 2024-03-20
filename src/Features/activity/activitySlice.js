@@ -7,28 +7,32 @@ const activitySlice = createSlice({
     },
     reducers: {
         increment(state, action) {
-            if (action.payload == 'break') {
+            if (action.payload === 'break') {
 
                 state.lengthBreak++;
             }
-            if (action.payload == 'session') {
+            if (action.payload === 'session') {
 
                 state.lengthSession++;
             }
         },
         decrement(state, action) {
-            if (state.lengthBreak > 1 && action.payload == 'break') {
+            if (state.lengthBreak > 1 && action.payload === 'break') {
 
                 state.lengthBreak--;
             }
-            if (state.lengthSession > 1 && action.payload == 'session') {
+            if (state.lengthSession > 1 && action.payload === 'session') {
 
                 state.lengthSession--;
             }
+        },
+        resettingActivity(state) {
+            state.lengthBreak = 5;
+            state.lengthSession = 25;
         }
     }
 })
 export const breakLength = state => state.activity.lengthBreak;
 export const sessionLength = state => state.activity.lengthSession;
-export const { increment, decrement } = activitySlice.actions;
+export const { increment, decrement, resettingActivity } = activitySlice.actions;
 export default activitySlice.reducer;
